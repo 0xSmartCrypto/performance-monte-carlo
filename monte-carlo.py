@@ -24,13 +24,16 @@ num_weeks = os.getenv("NUM_WEEKS", 52)  # Number of weeks to simulate
 # Initialize a DataFrame to hold the results
 simulations = pd.DataFrame()
 
-# Run the simulations
+# Run the simulations, assuming R = 1% of account balance
+RISK_PER_TRADE = 0.01
 for i in range(num_simulations):
     weekly_returns = np.random.normal(mean_r, stddev_r, int(num_weeks))
     balance = float(starting_balance)
     balance_history = []
     for weekly_return in weekly_returns:
-        r_dollars = (weekly_return * (balance * 0.01)) * fee_adjustment
+        r_dollars = (
+            weekly_return * (balance * RISK_PER_TRADE)
+        ) * fee_adjustment
         balance += r_dollars
         balance_history.append(balance)
     simulations[i] = balance_history
