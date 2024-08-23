@@ -1,28 +1,33 @@
+import os
 import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
 
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-PLOT = False
+load_dotenv(".env")
+PLOT = os.getenv("PLOT", False)
 
 # Simulation Parameters
 mean_r = 11.4  # Mean weekly return in R
 stddev_r = 7.657675888  # Standard deviation of weekly returns in R
-starting_balance = 10000  # Starting balance in dollars
-fee_adjustment = 0.8  # Adjusting for a 20% fee
+starting_balance = os.getenv(
+    "STARTING_BALANCE", 10000
+)  # Starting balance in dollars
+fee_adjustment = 0.8  # Adjusting for 20% for trading fees and slippage
 num_simulations = 1000  # Number of Monte Carlo simulations
-num_weeks = 52  # Number of weeks to simulate
+num_weeks = os.getenv("NUM_WEEKS", 52)  # Number of weeks to simulate
 
 # Initialize a DataFrame to hold the results
 simulations = pd.DataFrame()
 
 # Run the simulations
 for i in range(num_simulations):
-    weekly_returns = np.random.normal(mean_r, stddev_r, num_weeks)
-    balance = starting_balance
+    weekly_returns = np.random.normal(mean_r, stddev_r, int(num_weeks))
+    balance = float(starting_balance)
     balance_history = []
     for weekly_return in weekly_returns:
         r_dollars = (weekly_return * (balance * 0.01)) * fee_adjustment
@@ -106,9 +111,10 @@ if PLOT:
 
 # Display summary statistics
 print(f"Monte Carlo Simulation Results After {num_weeks} Weeks")
+print(f"Starting Balance: ${starting_balance}")
 print(f"Mean Final Balance: ${mean_final_balance:.2f}")
 print(f"Median Final Balance: ${median_final_balance:.2f}")
 print(f"1st Percentile (Extreme-Case): ${percentile_1st:.2f}")
-print(f"5th Percentile (Worst-Case): ${percentile_5th:.2f}")
-print(f"95th Percentile (Best-Case): ${percentile_95th:.2f}")
+# print(f"5th Percentile (Worst-Case): ${percentile_5th:.2f}")
+# print(f"95th Percentile (Best-Case): ${percentile_95th:.2f}")
 print(f"99th Percentile (Dream-Case): ${percentile_99th:.2f}")
