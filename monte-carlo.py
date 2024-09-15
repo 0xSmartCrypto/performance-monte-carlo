@@ -12,8 +12,12 @@ load_dotenv(".env")
 PLOT = os.getenv("PLOT", False)
 
 # Simulation Parameters
-mean_r = 3.535  # Mean weekly return in R
-stddev_r = 3.551696074  # Standard deviation of weekly returns in R
+
+# Mean weekly return in R
+mean_r = 3.5871
+# Standard deviation of weekly returns in R
+stddev_r = 3.642342743
+
 starting_balance = os.getenv(
     "STARTING_BALANCE", 10000
 )  # Starting balance in dollars
